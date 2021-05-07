@@ -20,7 +20,6 @@ def build_trie(patterns):
 
 		curr_node_id = 0
 		curr_node = trie[curr_node_id]
-		# print(pattern)
 
 		for i in range(len(pattern)):
 
@@ -44,11 +43,12 @@ def build_trie(patterns):
 	
 				trie.update({new_node_id : {}})
 
+				# add a new edge from the current node to this new node with the label of curr_symbol
 				curr_node.update({curr_symbol : [new_node_id, None]})
 
 				if i == len(pattern) - 1:
 
-					# add a new edge from the current node to this new node with the label of curr_symbol
+					# the current symbol is the end of the pattern, flag that this node should be seen as a root					
 					curr_node[curr_symbol][1] = True
 
 				else:
@@ -59,11 +59,11 @@ def build_trie(patterns):
 					curr_node_id = new_node_id
 					curr_node = trie[curr_node_id]
 
-			# print(curr_symbol, curr_node, trie)
-
 	return trie
 
 def prefix_trie_matching(text, trie):
+
+	"""The goal in this problem is to extend the algorithm from the previous problem such that it will be able to handle cases when one of the patterns is a prefix of another pattern. In this case, some patterns are spelled in a trie by traversing a path from the root to an internal vertex, but not to a leaf"""
 
 	i = 0
 	v = 0
@@ -80,6 +80,7 @@ def prefix_trie_matching(text, trie):
 			if text[i] in trie[v]:
 
 				if trie[v][text[i]][1]:
+					# the current node was flagged as a root (a patten match was found)
 					return text[0:v]
 
 				v = trie[v][text[i]][0]
@@ -122,14 +123,8 @@ if __name__ == '__main__':
 	patterns = data[2:]
 
 	trie = build_trie(patterns)
-	# print(patterns)
-	# print(trie)
+
 	matches = solve(text, trie)
 
 	print(' '.join([str(match[0]) for match in matches]))
     
-
-# AATCGGGTTCAATCGGGGT
-# 2
-# ATCG
-# GGGT
